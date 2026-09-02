@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import db from "../db/database.js";
+import adminAppointmentsRouter from "./routes/adminAppointments.js";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -62,7 +63,7 @@ app.post("/api/appointments", (req, res) => {
   const firstName = normalizedName.shift() || "";
   const lastName = normalizedName.join(" ") || "-";
 
-  const transaction = db.transaction(() => {
+  const appointmentId = db.transaction(() => {
     let customer = db.prepare("SELECT id FROM customers WHERE email = ? LIMIT 1").get(email.trim().toLowerCase());
 
     if (customer) {
@@ -86,14 +87,16 @@ app.post("/api/appointments", (req, res) => {
     `).run(customer.id, selectedService.id, date, time, String(message || "").trim());
 
     return result.lastInsertRowid;
-  });
+  })();
 
   return res.status(201).json({
     message: "Terminanfrage erfolgreich entgegengenommen.",
-    appointmentId: transaction,
+    appointmentId,
     appointment: { name, email, phone, service: selectedService.name, date, time, message: message || "" }
   });
 });
+
+app.use("/api/admin", adminAppointmentsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
