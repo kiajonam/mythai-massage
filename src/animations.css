@@ -20,6 +20,16 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes luxuryScrollIn {
+  from { opacity: 0; transform: translateY(38px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes luxuryImageIn {
+  from { opacity: 0; transform: scale(1.045); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 @keyframes luxuryGlow {
   0%, 100% { opacity: .45; transform: scale(.96); }
   50% { opacity: .8; transform: scale(1.04); }
@@ -149,6 +159,49 @@
   animation: luxuryGlow 4s ease-in-out infinite;
 }
 
+/* Scroll reveal is activated by the IntersectionObserver in App.jsx. */
+.reveal-ready > .container > .section-head,
+.reveal-ready > .container > .service-grid,
+.reveal-ready > .container > .about-grid > .about-photo,
+.reveal-ready > .container > .about-grid > .about-copy,
+.reveal-ready > .container > .booking-wrap > .booking-copy,
+.reveal-ready > .container > .booking-wrap > .booking-form,
+.reveal-ready > .container > .rating-line,
+.reveal-ready > .container > .reviews-grid,
+.reveal-ready > .container > .contact-grid,
+.reveal-ready > .container > .footer-grid,
+.reveal-ready > .footer-bottom {
+  opacity: 0;
+}
+
+.reveal-ready.is-visible > .container > .section-head,
+.reveal-ready.is-visible > .container > .about-grid > .about-photo,
+.reveal-ready.is-visible > .container > .about-grid > .about-copy,
+.reveal-ready.is-visible > .container > .booking-wrap > .booking-copy,
+.reveal-ready.is-visible > .container > .booking-wrap > .booking-form,
+.reveal-ready.is-visible > .container > .rating-line,
+.reveal-ready.is-visible > .container > .contact-grid,
+.reveal-ready.is-visible > .container > .footer-grid,
+.reveal-ready.is-visible > .footer-bottom {
+  animation: luxuryScrollIn .8s cubic-bezier(.22,1,.36,1) both;
+}
+
+.reveal-ready.is-visible > .container > .service-grid,
+.reveal-ready.is-visible > .container > .reviews-grid {
+  animation: luxuryScrollIn .75s cubic-bezier(.22,1,.36,1) both;
+}
+
+.reveal-ready.is-visible .service-card,
+.reveal-ready.is-visible .review-card {
+  animation: luxuryScrollIn .7s cubic-bezier(.22,1,.36,1) both;
+}
+
+.reveal-ready.is-visible .service-card:nth-child(2),
+.reveal-ready.is-visible .review-card:nth-child(2) { animation-delay: .10s; }
+
+.reveal-ready.is-visible .service-card:nth-child(3),
+.reveal-ready.is-visible .review-card:nth-child(3) { animation-delay: .20s; }
+
 @media (max-width: 900px) {
   .nav-links.is-open {
     animation: luxuryMenuIn .35s cubic-bezier(.22,1,.36,1) both;
@@ -164,8 +217,22 @@
   .hero-overlay,
   .eyebrow svg,
   .nav-links.is-open,
-  .map-card::before {
+  .map-card::before,
+  .reveal-ready.is-visible > .container > .section-head,
+  .reveal-ready.is-visible > .container > .service-grid,
+  .reveal-ready.is-visible > .container > .about-grid > .about-photo,
+  .reveal-ready.is-visible > .container > .about-grid > .about-copy,
+  .reveal-ready.is-visible > .container > .booking-wrap > .booking-copy,
+  .reveal-ready.is-visible > .container > .booking-wrap > .booking-form,
+  .reveal-ready.is-visible > .container > .rating-line,
+  .reveal-ready.is-visible > .container > .reviews-grid,
+  .reveal-ready.is-visible > .container > .contact-grid,
+  .reveal-ready.is-visible > .container > .footer-grid,
+  .reveal-ready.is-visible > .footer-bottom,
+  .reveal-ready.is-visible .service-card,
+  .reveal-ready.is-visible .review-card {
     animation: none !important;
+    opacity: 1 !important;
   }
 
   .button,
