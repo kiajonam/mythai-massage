@@ -15,9 +15,9 @@ import { useEffect, useState } from "react";
 import { AdminApp } from "./components/admin/AdminApp";
 
 const services = [
-  { title: "Traditionelle Thai-Massage", text: "Gezielte Drucktechniken und passive Dehnungen für neue Leichtigkeit.", duration: "60 Min.", price: "69 €" },
-  { title: "Aroma-Öl-Massage", text: "Sanfte Massage mit warmem Öl für tiefe Entspannung und Wohlgefühl.", duration: "60 Min.", price: "75 €" },
-  { title: "Rücken & Nacken", text: "Fokus auf verspannte Bereiche nach einem langen Arbeitstag.", duration: "30 Min.", price: "39 €" },
+  { number: "01", title: "Traditionelle Thai-Massage", text: "Gezielte Drucktechniken und passive Dehnungen für neue Leichtigkeit.", duration: "60 Min.", price: "69 €", tag: "SIGNATURE", featured: true },
+  { number: "02", title: "Aroma-Öl-Massage", text: "Sanfte Massage mit warmem Öl für tiefe Entspannung und Wohlgefühl.", duration: "60 Min.", price: "75 €", tag: "RELAX" },
+  { number: "03", title: "Rücken & Nacken", text: "Fokus auf verspannte Bereiche nach einem langen Arbeitstag.", duration: "30 Min.", price: "39 €", tag: "FOCUS" },
 ];
 const testimonials = [
   { quote: "Sehr ruhige Atmosphäre, professionell und unglaublich entspannend.", name: "Julia M.", meta: "Google Bewertung" },
@@ -37,31 +37,20 @@ function App() {
 
   useEffect(() => {
     if (currentPage.startsWith("/admin")) return undefined;
-
-    const targets = document.querySelectorAll(
-      ".services-section, .about-section, .booking-section, .reviews-section, .contact-section, .footer",
-    );
-
+    const targets = document.querySelectorAll(".services-section, .about-section, .booking-section, .reviews-section, .contact-section, .footer");
     targets.forEach((element) => element.classList.add("reveal-ready"));
-
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       targets.forEach((element) => element.classList.add("is-visible"));
       return undefined;
     }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
-    );
-
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
     targets.forEach((element) => observer.observe(element));
-
     return () => observer.disconnect();
   }, [currentPage]);
 
@@ -70,9 +59,7 @@ function App() {
     setMenuOpen(false);
   };
 
-  if (currentPage.startsWith("/admin")) {
-    return <AdminApp currentPage={currentPage} />;
-  }
+  if (currentPage.startsWith("/admin")) return <AdminApp currentPage={currentPage} />;
 
   return (
     <div className="site-shell">
@@ -89,7 +76,7 @@ function App() {
       <main id="top">
         <section className="hero"><div className="hero-overlay" /><div className="hero-glow" /><div className="container hero-inner"><div className="hero-copy"><span className="eyebrow"><Sparkles size={15} /> AUTHENTISCHE THAI-MASSAGE</span><h1>Ruhe für den Körper.<br /><em>Balance für den Geist.</em></h1><p>Entdecke traditionelle Thai-Massage in einer modernen, warmen Atmosphäre. Zeit nur für dich.</p><div className="hero-actions"><button className="button button-gold" onClick={() => scrollTo("booking")}>Termin buchen <ArrowRight size={18} /></button><button className="button button-ghost" onClick={() => scrollTo("services")}>Behandlungen ansehen</button></div></div><div className="hero-card"><span>HEUTE VERFÜGBAR</span><strong>Dein Moment<br />für Entspannung.</strong><div className="hero-card-meta"><Clock3 size={16} /> Mo–Sa · 10:00–20:00</div><button onClick={() => scrollTo("booking")}>Schnell buchen <ArrowRight size={16} /></button></div></div><button className="hero-scroll" onClick={() => scrollTo("services")} aria-label="Zu den Behandlungen scrollen"><span>ENTDECKEN</span><i /></button></section>
         <section className="trust-bar"><div className="container trust-grid"><div><Check size={18} /><span>Erfahrene Therapeutinnen</span></div><div><Check size={18} /><span>Hygiene &amp; Qualität</span></div><div><Check size={18} /><span>Individuelle Behandlung</span></div><div><Check size={18} /><span>5,0 ★ Kundenzufriedenheit</span></div></div></section>
-        <section id="services" className="section services-section"><div className="container"><div className="section-head centered"><span className="eyebrow purple"><Sparkles size={15} /> UNSERE BEHANDLUNGEN</span><h2>Wohlfühlen, <em>ganz nach deinem Rhythmus.</em></h2><p>Wähle die Behandlung, die zu deinem Körper und deinem aktuellen Bedürfnis passt.</p></div><div className="service-grid">{services.map((service) => <article className="service-card" key={service.title}><div className="service-icon"><Sparkles size={22} /></div><div className="service-top"><span>{service.duration}</span><strong>{service.price}</strong></div><h3>{service.title}</h3><p>{service.text}</p><button onClick={() => scrollTo("booking")}>Termin wählen <ArrowRight size={16} /></button></article>)}</div></div></section>
+        <section id="services" className="section services-section"><div className="container"><div className="section-head centered"><span className="eyebrow purple"><Sparkles size={15} /> UNSERE BEHANDLUNGEN</span><h2>Wohlfühlen, <em>ganz nach deinem Rhythmus.</em></h2><p>Wähle die Behandlung, die zu deinem Körper und deinem aktuellen Bedürfnis passt.</p></div><div className="service-grid">{services.map((service) => <article className={`service-card ${service.featured ? "is-featured" : ""}`} key={service.title}><div className="service-card-badge"><span>{service.number}</span><small>{service.tag}</small></div><div className="service-icon"><Sparkles size={22} /></div><div className="service-top"><span><Clock3 size={14} /> {service.duration}</span><strong>{service.price}</strong></div><h3>{service.title}</h3><p>{service.text}</p><div className="service-footer"><button onClick={() => scrollTo("booking")}>Termin wählen <ArrowRight size={16} /></button>{service.featured && <span className="popular"><Star size={12} /> BELIEBT</span>}</div></article>)}</div></div></section>
         <section id="about" className="about-section"><div className="container about-grid"><div className="about-photo photo-one"><span>Tradition</span></div><div className="about-copy"><span className="eyebrow purple"><Sparkles size={15} /> MY THAI MASSAGE</span><h2>Tradition trifft <em>moderne Ruhe.</em></h2><p>Unsere Arbeit verbindet klassische Thai-Massagetechniken mit einem modernen Spa-Erlebnis. Von der Begrüßung bis zum letzten Moment soll sich alles ruhig, hochwertig und persönlich anfühlen.</p><div className="about-points"><div><span>01</span><div><strong>Mit Zeit für dich</strong><p>Keine Hektik. Jede Behandlung wird auf dich abgestimmt.</p></div></div><div><span>02</span><div><strong>Mit echter Erfahrung</strong><p>Traditionelle Techniken und ein sicherer, professioneller Umgang.</p></div></div></div><button className="text-link" onClick={() => scrollTo("contact")}>Mehr über uns <ArrowRight size={16} /></button></div></div></section>
         <section id="booking" className="booking-section"><div className="container booking-wrap"><div className="booking-copy"><span className="eyebrow">DEIN TERMIN</span><h2>Ein kleiner Schritt.<br /><em>Ein deutlich besseres Gefühl.</em></h2><p>Buche unkompliziert deinen Wunschtermin. Wir melden uns zur Bestätigung persönlich bei dir.</p><div className="booking-info"><CalendarDays size={19} /><span>Terminanfragen innerhalb der Öffnungszeiten</span></div><div className="booking-info"><Phone size={19} /><span>Telefon: +49 221 12345678</span></div></div><form className="booking-form" onSubmit={(e) => e.preventDefault()}><div className="form-title"><span>Schnellanfrage</span><small>Antwort während der Öffnungszeiten</small></div><label>Dein Name<input placeholder="Vor- und Nachname" /></label><div className="form-row"><label>Telefon<input placeholder="+49 ..." /></label><label>Wunschtermin<input type="date" /></label></div><label>Behandlung<select defaultValue=""><option value="" disabled>Bitte auswählen</option><option>Traditionelle Thai-Massage · 60 Min.</option><option>Aroma-Öl-Massage · 60 Min.</option><option>Rücken &amp; Nacken · 30 Min.</option></select></label><label>Nachricht<textarea rows="3" placeholder="Wunschzeit oder besondere Hinweise" /></label><button className="button button-gold full" type="submit">Anfrage senden <ArrowRight size={18} /></button><small className="form-note">Mit dem Absenden entsteht noch keine verbindliche Reservierung.</small></form></div></section>
         <section id="reviews" className="section reviews-section"><div className="container"><div className="section-head centered"><span className="eyebrow purple"><Star size={15} /> GÄSTE ÜBER UNS</span><h2>Entspannung, die <em>man weiterempfiehlt.</em></h2></div><div className="rating-line"><strong>5,0</strong><span className="stars">★★★★★</span><span>auf Google · basierend auf Kundenbewertungen</span></div><div className="reviews-grid">{testimonials.map((review) => <article className="review-card" key={review.name}><div className="review-stars">★★★★★</div><p>“{review.quote}”</p><div><strong>{review.name}</strong><span>{review.meta}</span></div></article>)}</div></div></section>
